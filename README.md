@@ -996,9 +996,13 @@ MIT License
 ## 建议系统配置
 
 最低电脑配置：
+
 处理器：志强/酷睿/锐龙/霄龙6核心以上（推荐24核心及以上）
+
 内存：不少于16g（推荐容量64/128g及以上ddr4/ddr5内存容量）
+
 显卡：对话模式下显存不少于4G/训练模式下显存不少于24g（推荐v100/3090/3090TI/4090/5090/a100/h100等等）
+
 硬盘不少于256g（推荐1t硬盘及以上）
 
 Minimum computer configuration:
@@ -1009,7 +1013,9 @@ The hard drive should not be less than 256g (recommended is a 1TB hard drive or 
 
 ## 贡献
 
-项目开发人员：张裕浩（zhangyuhao/Markhao）linkedin（领英）:www.linkedin.com/in/裕浩-张-bb1bb93ab 邮箱：zhangyuhao@haoxun.cc  注：欢迎大家反馈项目问题！
+项目开发人员：
+
+张裕浩（zhangyuhao/Markhao）linkedin（领英）:www.linkedin.com/in/裕浩-张-bb1bb93ab 邮箱：zhangyuhao@haoxun.cc  注：欢迎大家反馈项目问题！
 
 欢迎贡献代码、报告问题或提出建议！
 
