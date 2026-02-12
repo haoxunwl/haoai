@@ -16,8 +16,10 @@ HaoAI 是一个由浩讯亿通电脑店和浩讯网络开发制作的轻量级�
 后面也会慢慢兼容国产（中国制造MADE IN CHINA）计算卡，但是目前国产设备性价比不是很高，所以并没有兼容除英伟达（NVIDIA）以外的显卡!
 禁止将该模型用于任何非法用途！
 项目二开和智能客服等部署开发需要一定代码基础！
+
 english(英文版）:
 HaoAI is a lightweight language model implementation project developed by Haoxun Yitong Computer Store and Haoxun Network, designed based on the Transformer architecture to provide a customizable and scalable language model framework. The project adopts a modular design, supports standard Transformer structures, and implements a complete training workflow, including pre-training, supervised fine-tuning (SFT), and human feedback reinforcement learning (RLHF). Future development directions for the project include e-commerce intelligent customer service, enterprise intelligent financial robots, and more... (Upon full development, it will be MIT-open sourced!)! Please provide the text to be translated, and I will output the translated version directly without any explanations, ensuring the meaning is coherent.  It will gradually support domestic (Made in China) computing cards in the future, but currently, domestic equipment lacks competitive cost performance, so it does not support graphics cards other than NVIDIA! This model must not be used for any illegal purposes! Projects such as secondary development and intelligent customer service require a certain foundation in coding!
+
 当前只开放了共计2000多条高质量的数据集（数据不多仅供学习参考），高质量的训练数据自己可以去爬取或者去电商平台上购买！淘宝闲鱼等平台搜索ai训练数据上面都有！
 ## 核心特性
 
