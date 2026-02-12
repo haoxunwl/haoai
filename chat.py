@@ -7,7 +7,7 @@ HaoAI对话界面
 import torch
 import os
 import sys
-from typing import List, Dict
+from typing import List, Dict, Any
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -92,10 +92,10 @@ class EnhancedChatSystem:
                 attention_mask=attention_mask,
                 max_length=len(input_ids) + 200,
                 do_sample=True,
-                temperature=0.8,
-                top_p=0.95,
-                top_k=50,
-                repetition_penalty=1.2,
+                temperature=0.3,
+                top_p=0.8,
+                top_k=20,
+                repetition_penalty=1.1,
                 pad_token_id=self.tokenizer.eos_token_id,
                 eos_token_id=self.tokenizer.eos_token_id
             )
@@ -293,7 +293,7 @@ def chat_with_haoai():
     
     print("\n[INFO] 加载SmartHaoAI模型...")
     try:
-        model = SmartHaoAI.from_pretrained(model_dir)
+        model = SmartHaoAI.from_pretrained(model_dir, ignore_mismatched_sizes=True)
         model.to(device)
         model.eval()
         print("[SUCCESS] 模型加载成功！")
