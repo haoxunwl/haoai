@@ -1,10 +1,11 @@
 
-<img width="1706" height="1664" alt="500247749-b12349c6-2919-4526-bb27-5ceb928d84a4" src="https://github.com/user-attachments/assets/cd9eff87-a746-46ed-b929-7aa10c173658" />
+
 
 
 # HaoAI - 轻量级语言模型实现
-╔╗╔╗╔══╗╔══╗╔══╗╔══╗╔╗╔╗╔╗─╔╗╔════╗╔══╗╔╗─╔╗╔═══╗╔══╗╔══╗╔══╗╔╗─╔╗ ║║║║║╔╗║║╔╗║╚═╗║║╔═╝║║║║║╚═╝║╚═╗╔═╝║╔╗║║╚═╝║║╔══╝╚═╗║║╔═╝╚╗╔╝║╚═╝║ ║╚╝║║╚╝║║║║║──║╚╝║──║║║║║╔╗─║──║║──║║║║║╔╗─║║║╔═╗──║╚╝║───║║─║╔╗─║ ║╔╗║║╔╗║║║║║──║╔╗║──║║║║║║╚╗║──║║──║║║║║║╚╗║║║╚╗║──║╔╗║───║║─║║╚╗║ ║║║║║║║║║╚╝║╔═╝║║╚═╗║╚╝║║║─║║──║║──║╚╝║║║─║║║╚═╝║╔═╝║║╚═╗╔╝╚╗║║─║║ ╚╝╚╝╚╝╚╝╚══╝╚══╝╚══╝╚══╝╚╝─╚╝──╚╝──╚══╝╚╝─╚╝╚═══╝╚══╝╚══╝╚══╝╚╝─╚╝
 <img width="940" height="485" alt="d0c3d7a84caf4d633621cc5196a3f089" src="https://github.com/user-attachments/assets/f55d6817-c80f-45c7-9b94-777c3811a4ba" />
+╔╗╔╗╔══╗╔══╗╔══╗╔══╗╔╗╔╗╔╗─╔╗╔════╗╔══╗╔╗─╔╗╔═══╗╔══╗╔══╗╔══╗╔╗─╔╗ ║║║║║╔╗║║╔╗║╚═╗║║╔═╝║║║║║╚═╝║╚═╗╔═╝║╔╗║║╚═╝║║╔══╝╚═╗║║╔═╝╚╗╔╝║╚═╝║ ║╚╝║║╚╝║║║║║──║╚╝║──║║║║║╔╗─║──║║──║║║║║╔╗─║║║╔═╗──║╚╝║───║║─║╔╗─║ ║╔╗║║╔╗║║║║║──║╔╗║──║║║║║║╚╗║──║║──║║║║║║╚╗║║║╚╗║──║╔╗║───║║─║║╚╗║ ║║║║║║║║║╚╝║╔═╝║║╚═╗║╚╝║║║─║║──║║──║╚╝║║║─║║║╚═╝║╔═╝║║╚═╗╔╝╚╗║║─║║ ╚╝╚╝╚╝╚╝╚══╝╚══╝╚══╝╚══╝╚╝─╚╝──╚╝──╚══╝╚╝─╚╝╚═══╝╚══╝╚══╝╚══╝╚╝─╚╝
+
 
 开源-免费-绿色-安全-可商用-可二次开发-无需授权
 Open source - Free - Green - Safe - Commercially usable - Reusable - No authorization required
@@ -1029,3 +1030,6 @@ The hard drive should not be less than 256g (recommended is a 1TB hard drive or 
 因为该模型造成的任何损失后果自负（例如客服场景造成随意承诺客户和智能会计造成税务风险等），本项目不承担任何责任！这些场景需要一定编程能力和人工智能相关能力二次深度开发！！！
 Prohibited from using this model for any illegal purposes! (e.g., pornography, gambling, drugs, fraud, scams, etc.)
 Any losses caused by this model shall be borne by the user (e.g., arbitrary commitments to customers in customer service scenarios or tax risks in intelligent accounting), and this project assumes no responsibility! These scenarios require secondary in-depth development with certain programming and AI-related capabilities!!!
+
+## 关于我们
+<img width="1706" height="1664" alt="500247749-b12349c6-2919-4526-bb27-5ceb928d84a4" src="https://github.com/user-attachments/assets/cd9eff87-a746-46ed-b929-7aa10c173658" />
