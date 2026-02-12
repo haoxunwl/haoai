@@ -3,6 +3,7 @@
 
 # HaoAI - 轻量级语言模型实现
 开源-免费-绿色-安全-可商用-可二次开发-无需授权
+Open source - Free - Green - Safe - Commercially usable - Reusable - No authorization required
 ## 项目概述
 
 HaoAI 是一个由浩讯亿通电脑店和浩讯网络开发制作的轻量级语言模型实现项目，基于 Transformer 架构设计，提供可定制和可扩展的语言模型架构。项目采用模块化设计，支持标准 Transformer 结构，并实现了完整的训练流程，包括预训练、监督微调（SFT）和人类反馈强化学习（RLHF）。
@@ -10,6 +11,8 @@ HaoAI 是一个由浩讯亿通电脑店和浩讯网络开发制作的轻量级�
 后面也会慢慢兼容国产（中国制造MADE IN CHINA）计算卡，但是目前国产设备性价比不是很高，所以并没有兼容除英伟达（NVIDIA）以外的显卡!
 禁止将该模型用于任何非法用途！
 项目二开和智能客服等部署开发需要一定代码基础！
+english(英文版）:
+HaoAI is a lightweight language model implementation project developed by Haoxun Yitong Computer Store and Haoxun Network, designed based on the Transformer architecture to provide a customizable and scalable language model framework. The project adopts a modular design, supports standard Transformer structures, and implements a complete training workflow, including pre-training, supervised fine-tuning (SFT), and human feedback reinforcement learning (RLHF). Future development directions for the project include e-commerce intelligent customer service, enterprise intelligent financial robots, and more... (Upon full development, it will be MIT-open sourced!)! Please provide the text to be translated, and I will output the translated version directly without any explanations, ensuring the meaning is coherent.  It will gradually support domestic (Made in China) computing cards in the future, but currently, domestic equipment lacks competitive cost performance, so it does not support graphics cards other than NVIDIA! This model must not be used for any illegal purposes! Projects such as secondary development and intelligent customer service require a certain foundation in coding!
 ## 核心特性
 
 ### 模型架构
@@ -990,6 +993,12 @@ MIT License
 显卡：对话模式下显存不少于4G/训练模式下显存不少于24g（推荐v100/3090/3090TI/4090/5090/a100/h100等等）
 硬盘不少于256g（推荐1t硬盘及以上）
 
+Minimum computer configuration:
+Processor: Zhiqiang/Core/Ryzen/Xiaolong 6-core or above (recommended 24 core or above)
+Memory: not less than 16g (recommended capacity of 64/128g or above DDR4/DDR5 memory capacity)
+Graphics card: Video memory of no less than 4GB in dialogue mode and no less than 24GB in training mode (recommended v100/3090/3090TI/4090/5090/a100/h100, etc.)
+The hard drive should not be less than 256g (recommended is a 1TB hard drive or above)
+
 ## 贡献
 
 项目开发人员：张裕浩（zhangyuhao/Markhao）linkedin（领英）:www.linkedin.com/in/裕浩-张-bb1bb93ab 邮箱：zhangyuhao@haoxun.cc  注：欢迎大家反馈项目问题！
@@ -1011,3 +1020,5 @@ MIT License
 ## 免责声明
 禁止将该模型用于任何非法用途！（例如：黄赌毒，欺诈诈骗等！）
 因为该模型造成的任何损失后果自负（例如客服场景造成随意承诺客户和智能会计造成税务风险等），本项目不承担任何责任！这些场景需要一定编程能力和人工智能相关能力二次深度开发！！！
+Prohibited from using this model for any illegal purposes! (e.g., pornography, gambling, drugs, fraud, scams, etc.)
+Any losses caused by this model shall be borne by the user (e.g., arbitrary commitments to customers in customer service scenarios or tax risks in intelligent accounting), and this project assumes no responsibility! These scenarios require secondary in-depth development with certain programming and AI-related capabilities!!!
