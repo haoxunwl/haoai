@@ -47,7 +47,11 @@ class PretrainConfig(TrainingConfig):
 @dataclass
 class SFTConfig(TrainingConfig):
     batch_size: int = 4
-    lr: float = 5e-5  # 提高学习率以加速收敛
+    lr: float = 5e-5
     pretrain_model_dir: str = "weight/haoai_pretrained_model/"
     sft_model_dir: str = "weight/haoai_sft_model/"
     checkpoint_file: str = "weight/haoai_sft_model/sft_checkpoint.pt"
+    use_scheduler: bool = True
+    scheduler_type: str = "cosine"
+    warmup_ratio: float = 0.1
+    min_lr_ratio: float = 0.1
