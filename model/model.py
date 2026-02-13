@@ -17,7 +17,7 @@ class HaoAIConfig(PretrainedConfig):
     def __init__(
         self,
         vocab_size=16384,
-        n_layer=8,
+        n_layer=12,
         n_head=8,
         n_embd=1024,
         dropout=0.1,
@@ -27,6 +27,9 @@ class HaoAIConfig(PretrainedConfig):
         use_reasoning=True,
         use_sliding_window=True,
         window_size=512,
+        use_gelu=True,
+        use_grouped_attention=False,
+        n_kv_head=None,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -41,6 +44,9 @@ class HaoAIConfig(PretrainedConfig):
         self.use_reasoning = use_reasoning
         self.use_sliding_window = use_sliding_window
         self.window_size = window_size
+        self.use_gelu = use_gelu
+        self.use_grouped_attention = use_grouped_attention
+        self.n_kv_head = n_kv_head if n_kv_head is not None else n_head
 
 
 class SlidingWindowAttention(nn.Module):
@@ -233,8 +239,16 @@ class SmartAttention(nn.Module):
         super().__init__()
         self.n_head = config.n_head
         self.head_dim = config.n_embd // config.n_head
-
-        self.qkv = nn.Linear(config.n_embd, 3 * config.n_embd, bias=False)
+        self.n_kv_head = getattr(config, 'n_kv_head', config.n_head)
+        self.use_grouped_attention = getattr(config, 'use_grouped_attention', False)
+        
+        if self.use_grouped_attention:
+            self.q_proj = nn.Linear(config.n_embd, config.n_embd, bias=False)
+            self.k_proj = nn.Linear(config.n_embd, self.n_kv_head * self.head_dim, bias=False)
+            self.v_proj = nn.Linear(config.n_embd, self.n_kv_head * self.head_dim, bias=False)
+        else:
+            self.qkv = nn.Linear(config.n_embd, 3 * config.n_embd, bias=False)
+        
         self.o_proj = nn.Linear(config.n_embd, config.n_embd, bias=False)
 
         self.dropout = nn.Dropout(config.dropout)
@@ -250,12 +264,26 @@ class SmartAttention(nn.Module):
         use_cache=False,
     ):
         B, T, C = x.shape
-        qkv = self.qkv(x)
-        q, k, v = qkv.chunk(3, dim=-1)
+        
+        if self.use_grouped_attention:
+            q = self.q_proj(x)
+            k = self.k_proj(x)
+            v = self.v_proj(x)
+            
+            q = q.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
+            k = k.view(B, T, self.n_kv_head, self.head_dim).transpose(1, 2)
+            v = v.view(B, T, self.n_kv_head, self.head_dim).transpose(1, 2)
+            
+            if self.n_kv_head < self.n_head:
+                k = k.repeat_interleave(self.n_head // self.n_kv_head, dim=1)
+                v = v.repeat_interleave(self.n_head // self.n_kv_head, dim=1)
+        else:
+            qkv = self.qkv(x)
+            q, k, v = qkv.chunk(3, dim=-1)
 
-        q = q.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
-        k = k.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
-        v = v.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
+            q = q.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
+            k = k.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
+            v = v.view(B, T, self.n_head, self.head_dim).transpose(1, 2)
 
         past_len = past_key_value[0].size(2) if past_key_value else 0
         cos, sin = self.rope(T, past_len, x.device, x.dtype)
@@ -303,9 +331,13 @@ class FeedForward(nn.Module):
         self.fc1 = nn.Linear(config.n_embd, hidden)
         self.fc2 = nn.Linear(hidden, config.n_embd)
         self.dropout = nn.Dropout(config.dropout)
+        self.use_gelu = getattr(config, 'use_gelu', True)
 
     def forward(self, x):
-        return self.dropout(self.fc2(F.silu(self.fc1(x))))
+        if self.use_gelu:
+            return self.dropout(self.fc2(F.gelu(self.fc1(x))))
+        else:
+            return self.dropout(self.fc2(F.silu(self.fc1(x))))
 
 
 # =========================
@@ -473,8 +505,14 @@ class SmartHaoAI(PreTrainedModel):
         past_key_values = None
         reasoning_context = None
 
+        # 计算要生成的步数
+        input_length = input_ids.size(1)
+        generate_steps = max_length - input_length
+        if generate_steps <= 0:
+            generate_steps = 100  # 默认生成100个token
+
         with torch.no_grad():
-            for step in range(max_length):
+            for step in range(generate_steps):
                 if past_key_values is None:
                     model_inputs = {"input_ids": generated}
                 else:
@@ -510,7 +548,7 @@ class SmartHaoAI(PreTrainedModel):
 
                 generated = torch.cat([generated, next_token], dim=1)
 
-                if (next_token == eos_token_id).all():
+                if eos_token_id is not None and (next_token == eos_token_id).all():
                     break
 
         return generated
