@@ -1,6 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
+from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 import os
 import time
 from typing import Dict, Any, List
@@ -104,24 +105,53 @@ def sft_train() -> None:
 
         config = HaoAIConfig(
             vocab_size=tokenizer.vocab_size,
-            n_layer=6,
-            n_head=4,
-            n_embd=768,
+            n_layer=12,
+            n_head=8,
+            n_embd=1024,
             eos_token_id=tokenizer.eos_token_id,
-            pad_token_id=tokenizer.pad_token_id
+            pad_token_id=tokenizer.pad_token_id,
+            use_gelu=True,
+            use_grouped_attention=True,
+            n_kv_head=4
         )
         
         model = SmartHaoAI(config)
         
         if os.path.exists(sft_cfg.pretrain_model_dir):
             print(f"加载预训练模型: {sft_cfg.pretrain_model_dir}")
-            model = SmartHaoAI.from_pretrained(sft_cfg.pretrain_model_dir)
+            try:
+                model = SmartHaoAI.from_pretrained(sft_cfg.pretrain_model_dir, ignore_mismatched_sizes=True)
+                print("预训练模型加载成功")
+            except Exception as e:
+                print(f"加载预训练模型失败: {e}")
+                print("创建新模型进行训练")
+                config = HaoAIConfig(
+                    vocab_size=tokenizer.vocab_size,
+                    n_layer=12,
+                    n_head=8,
+                    n_embd=1024,
+                    eos_token_id=tokenizer.eos_token_id,
+                    pad_token_id=tokenizer.pad_token_id,
+                    use_gelu=True,
+                    use_grouped_attention=True,
+                    n_kv_head=4
+                )
+                model = SmartHaoAI(config)
         
         model.to(sft_cfg.device)
         
         optimizer = AdamW(model.parameters(), lr=sft_cfg.lr)
         
         total_steps = len(dataloader) * sft_cfg.epochs
+        
+        scheduler = CosineAnnealingLR(
+            optimizer,
+            T_max=total_steps,
+            eta_min=sft_cfg.lr * 0.1
+        )
+        
+        print(f"学习率调度器: 余弦退火，初始学习率={sft_cfg.lr}, 最小学习率={sft_cfg.lr * 0.1}")
+        print(f"总训练步数: {total_steps}")
         
         model.train()
         global_step = 0
@@ -143,6 +173,7 @@ def sft_train() -> None:
                 
                 if (batch_idx + 1) % sft_cfg.accumulation_steps == 0:
                     optimizer.step()
+                    scheduler.step()
                     optimizer.zero_grad()
                     global_step += 1
                 
