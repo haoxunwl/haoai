@@ -1363,7 +1363,7 @@ generation_config = {
 - 比如你写"我爱吃"，它能猜出"苹果"、"香蕉"
 - 但是有时候猜错，比如猜成"石头"（不能吃的东西）
 
-**� 第二个大脑：符号知识库（记忆专家）**
+** 第二个大脑：符号知识库（记忆专家）**
 - 像是一个超级会记笔记的学霸
 - 有一个大笔记本，上面写着各种知识
 - 比如"苹果是水果"、"水果可以吃"
@@ -1392,7 +1392,7 @@ generation_config = {
 
 ---
 
-### 学校里的例子
+### � 学校里的例子
 
 #### 例子1：写作文
 
@@ -1808,6 +1808,507 @@ The hard drive should not be less than 256g (recommended is a 1TB hard drive or 
 - Transformers
 - PyTorch
 - Tokenizers
+
+## API Server 文档
+![屏幕截图_20-2-2026_121142_localhost](https://github.com/user-attachments/assets/f0fc93c1-5f19-4527-b4b4-a3399833eda5)
+
+HaoAI 提供完整的 REST API 和 WebSocket 接口，支持通过 HTTP 请求与模型进行交互。
+
+### 快速启动 API Server
+
+```bash
+# 安装依赖
+pip install fastapi uvicorn websockets
+
+# 启动服务器
+python start_server.py
+```
+
+服务器将在 `http://localhost:8000` 启动。
+
+### API 接口列表
+
+#### 1. 健康检查
+
+**GET** `/api/health`
+
+检查服务器运行状态和模型加载情况。
+
+**响应示例**：
+```json
+{
+  "status": "healthy",
+  "model_loaded": true,
+  "device": "cuda",
+  "neuro_symbolic": {
+    "enabled": true,
+    "knowledge_graph_size": 150,
+    "inference_rules_count": 25
+  },
+  "timestamp": "2025-02-20T10:30:00",
+  "uptime": 3600.5
+}
+```
+
+#### 2. 对话接口
+
+**POST** `/api/chat`
+
+与模型进行对话。
+
+**请求体**：
+```json
+{
+  "message": "你好，请介绍一下自己",
+  "session_id": "可选，不传则创建新会话",
+  "stream": false
+}
+```
+
+**响应示例**：
+```json
+{
+  "response": "你好！我是HaoAI，一个基于神经符号推理的智能助手...",
+  "session_id": "session_1708412345678",
+  "processing_time": 1.25,
+  "neuro_symbolic_info": {
+    "enabled": true,
+    "knowledge_graph_size": 150,
+    "knowledge_context_length": 45
+  }
+}
+```
+
+#### 3. 流式对话接口
+
+**POST** `/api/chat/stream`
+
+使用 Server-Sent Events (SSE) 进行流式对话，实现打字机效果。
+
+**请求体**：与普通对话接口相同
+
+**响应格式**：`text/event-stream`
+
+```
+data: {"type": "session", "session_id": "session_xxx"}
+
+data: {"type": "token", "content": "你好"}
+
+data: {"type": "token", "content": "！我是"}
+
+data: {"type": "done", "processing_time": 1.25}
+```
+
+#### 4. WebSocket 实时对话
+
+**WS** `/ws/chat/{session_id}`
+
+通过 WebSocket 进行实时双向通信。
+
+**JavaScript 示例**：
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws/chat/session_123');
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({message: "你好"}));
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.type === 'thinking') {
+    console.log('AI思考中...');
+  } else if (data.type === 'response') {
+    console.log('AI回复:', data.content);
+  }
+};
+```
+
+#### 5. 神经符号系统信息
+
+**GET** `/api/neuro-symbolic/info`
+
+获取神经符号推理系统的详细信息。
+
+**响应示例**：
+```json
+{
+  "enabled": true,
+  "knowledge_graph": {
+    "total_facts": 150,
+    "unique_subjects": 80,
+    "unique_predicates": 15
+  },
+  "inference_capabilities": ["rule_based", "metacognitive", "contextual"],
+  "configuration": {
+    "fusion_weight": 0.9,
+    "use_symbolic_constraints": true
+  },
+  "system_config": {
+    "use_neuro_symbolic": true,
+    "device": "cuda"
+  }
+}
+```
+
+#### 6. 知识图谱查询
+
+**GET** `/api/neuro-symbolic/knowledge?query=人工智能`
+
+查询知识图谱中的相关知识。
+
+**响应示例**：
+```json
+{
+  "query": "人工智能",
+  "knowledge_context": "相关知识：\n- 人工智能是计算机科学\n- 人工智能包括机器学习\n",
+  "related_facts": [
+    {"subject": "人工智能", "predicate": "是", "object": "计算机科学", "confidence": 1.0}
+  ],
+  "total_facts": 5
+}
+```
+
+#### 7. 会话管理
+
+**GET** `/api/sessions`
+
+获取所有会话列表。
+
+**GET** `/api/sessions/{session_id}`
+
+获取特定会话的详细信息。
+
+**DELETE** `/api/sessions/{session_id}`
+
+删除会话。
+
+**POST** `/api/sessions/{session_id}/clear`
+
+清空会话历史。
+
+#### 8. 管理接口
+
+**POST** `/api/admin/reload-model`
+
+热重载模型（不中断服务）。
+
+**GET** `/api/admin/stats`
+
+获取系统统计信息（CPU、内存、会话数等）。
+
+**POST** `/api/admin/cleanup-sessions?max_age_hours=24`
+
+清理过期会话。
+
+### 前端界面
+
+启动服务器后，访问 `http://localhost:8000` 即可使用 Web 界面与模型对话。
+
+界面特性：
+- 现代化简约设计
+- 实时对话显示
+- 多会话管理
+- 响应式布局（支持电脑浏览器）
+- 神经符号系统状态指示
+
+### 错误处理
+
+API 使用标准 HTTP 状态码：
+
+- `200` - 成功
+- `400` - 请求参数错误
+- `429` - 请求过于频繁（限流）
+- `500` - 服务器内部错误
+- `503` - 模型尚未加载
+
+错误响应格式：
+```json
+{
+  "error": "模型尚未加载完成，请稍后重试",
+  "timestamp": "2025-02-20T10:30:00"
+}
+```
+
+### 限流说明
+
+- 每个 IP 每分钟最多 20 个请求
+- 消息长度限制：1-2000 字符
+- 超出限制将返回 429 错误
+
+### API 文档
+
+启动服务器后，可以访问以下地址查看自动生成的 API 文档：
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## 部署与运维
+
+### 生产环境部署
+
+#### 使用 Gunicorn + Uvicorn
+
+```bash
+# 安装 Gunicorn
+pip install gunicorn
+
+# 启动生产服务器
+gunicorn api_server:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+```
+
+参数说明：
+- `-w 4`：4个工作进程
+- `-k uvicorn.workers.UvicornWorker`：使用 Uvicorn worker
+- `--bind 0.0.0.0:8000`：绑定到所有网络接口
+
+#### 使用 Docker 部署
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["python", "start_server.py"]
+```
+
+构建和运行：
+```bash
+docker build -t haoai-api .
+docker run -p 8000:8000 haoai-api
+```
+
+#### 使用 Nginx 反向代理
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /ws/ {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### 系统监控
+
+#### 查看系统状态
+
+```bash
+# 获取系统统计信息
+curl http://localhost:8000/api/admin/stats
+
+# 健康检查
+curl http://localhost:8000/api/health
+```
+
+#### 日志管理
+
+日志文件位置：
+- 应用日志：`logs/app.log`
+- 错误日志：`logs/error.log`
+- 访问日志：`logs/access.log`
+
+日志轮转配置：
+```python
+# 在 api_server.py 中添加
+from logging.handlers import RotatingFileHandler
+
+handler = RotatingFileHandler(
+    'logs/app.log',
+    maxBytes=10*1024*1024,  # 10MB
+    backupCount=5
+)
+```
+
+#### 自动清理过期会话
+
+```bash
+# 清理超过24小时未活动的会话
+curl -X POST "http://localhost:8000/api/admin/cleanup-sessions?max_age_hours=24"
+```
+
+建议设置定时任务（crontab）：
+```bash
+# 每小时清理一次过期会话
+0 * * * * curl -X POST http://localhost:8000/api/admin/cleanup-sessions?max_age_hours=24
+```
+
+### 性能优化
+
+#### 模型加载优化
+
+1. **使用模型缓存**：
+```python
+# 在 api_server.py 中
+model_cache = {}
+
+def get_model(model_name):
+    if model_name not in model_cache:
+        model_cache[model_name] = load_model(model_name)
+    return model_cache[model_name]
+```
+
+2. **启用 GPU 加速**：
+```python
+# 确保使用 CUDA
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
+```
+
+3. **使用半精度推理**：
+```python
+# 使用 FP16 减少显存占用
+model = model.half()
+```
+
+#### 并发处理
+
+1. **调整工作进程数**：
+```bash
+# 根据 CPU 核心数调整
+# CPU 核心数 = 工作进程数
+gunicorn api_server:app -w $(nproc) -k uvicorn.workers.UvicornWorker
+```
+
+2. **启用异步处理**：
+```python
+# FastAPI 默认支持异步
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    # 异步处理请求
+    response = await generate_response(request.message)
+    return response
+```
+
+### 安全配置
+
+#### 启用 HTTPS
+
+```bash
+# 使用 Let's Encrypt 获取免费证书
+certbot --nginx -d your-domain.com
+```
+
+#### 配置 API 密钥
+
+```python
+# 在 api_server.py 中添加
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
+
+@app.post("/api/chat")
+async def chat(
+    request: ChatRequest,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    # 验证 API 密钥
+    if credentials.credentials != "your-api-key":
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    # ...
+```
+
+#### 配置 CORS
+
+```python
+# 限制允许的域名
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://your-domain.com"],
+    allow_credentials=True,
+    allow_methods=["POST", "GET"],
+    allow_headers=["*"],
+)
+```
+
+### 备份与恢复
+
+#### 会话数据备份
+
+```bash
+# 导出会话数据
+curl http://localhost:8000/api/sessions > sessions_backup.json
+
+# 导入会话数据（需要自定义接口）
+```
+
+#### 知识图谱备份
+
+```python
+# 在 api_server.py 中添加备份接口
+@app.post("/api/admin/backup-knowledge")
+async def backup_knowledge():
+    if chat_system and hasattr(chat_system, 'neuro_symbolic'):
+        kg = chat_system.neuro_symbolic.knowledge_graph
+        facts = [
+            {
+                "subject": f.subject,
+                "predicate": f.predicate,
+                "object": f.object,
+                "confidence": f.confidence
+            }
+            for f in kg.facts
+        ]
+        return {"facts": facts, "count": len(facts)}
+```
+
+### 故障排查
+
+#### 常见问题
+
+1. **模型加载失败**：
+   - 检查模型文件路径是否正确
+   - 检查显存是否充足
+   - 查看日志获取详细错误信息
+
+2. **响应缓慢**：
+   - 检查 GPU 使用率
+   - 增加工作进程数
+   - 启用模型缓存
+
+3. **内存溢出**：
+   - 减少批次大小
+   - 启用梯度检查点
+   - 使用半精度推理
+
+4. **WebSocket 连接失败**：
+   - 检查 Nginx 配置
+   - 确保 WebSocket 支持已启用
+   - 检查防火墙设置
+
+#### 调试模式
+
+```bash
+# 启用调试模式
+DEBUG=1 python start_server.py
+```
 
 ## 版本
 当前版本1.0.0 #haoai创世版本（第一个版本）2025/8/16开发完成
