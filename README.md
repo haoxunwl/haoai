@@ -23,17 +23,21 @@ HaoAI is a lightweight language model implementation project developed by Haoxun
 项目采用Transformer架构llm语言模型+神经符号系统+rag知识库混合架构！
 做客服、做会计，比 7B/13B 大模型还稳、还便宜、还能上线！
 这两个场景，天生就是为它设计的。
+
 一、做客服：完美！吊打大模型
 1. 听懂用户问题
 退货、换货、查物流、改地址、催单、投诉
 1GB 模型足够做意图识别 + 信息抽取
+
 2. 转换成符号
  Action=退货, Reason=质量问题, OrderID=xxx 
+ 
 3. 符号系统执行规则
 - 能退不能退？
 - 运费谁承担？
 - 超时没超时？
 全部按规则走，绝不乱回答。
+
 4. 自然语言回复
 最后用小模型把结果说成人话。
 优势大到离谱：
@@ -48,14 +52,17 @@ HaoAI is a lightweight language model implementation project developed by Haoxun
 会计的核心 = 规则 + 计算 + 逻辑
 正好是你这套架构的强项。
 能做的事：
+
 1. 票据/账单信息抽取
 日期、金额、类目、对方账户
 1GB 模型足够抽取成符号
+
 2. 符号系统做核算
 - 进项/销项判断
 - 税额计算
 - 费用归类
 - 借贷平衡检查
+
 3. 自动生成凭证
 借：管理费用
 贷：银行存款
