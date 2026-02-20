@@ -75,7 +75,7 @@ HaoAI is a lightweight language model implementation project developed by Haoxun
 - 合规 100%
 - 小模型 + 符号系统 = 财务级安全
 
-对比大模型（7B/13B），这套模型强在哪？
+对比大模型（7B/13B/30B），这套模型强在哪？
 - 大模型：会算错、会幻觉、会编科目、GPU 才能跑、贵
 - 这套：模型大小1GB + CPU + 符号 = 零幻觉、超便宜、逻辑稳
 
